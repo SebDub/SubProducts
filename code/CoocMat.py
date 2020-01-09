@@ -1,7 +1,8 @@
-def GettingCoocurenceMatrix(dirName: str = 'data'):
+import pandas as pd
+import scipy.sparse as sparse
 
-    import pandas as pd
-    import scipy.sparse as sparse
+
+def GettingCoocurenceMatrix(dirName: str = 'data'):
 
     dirName = 'data'
 
@@ -17,6 +18,8 @@ def GettingCoocurenceMatrix(dirName: str = 'data'):
 
     # Create mappings of the products and the orders
     # for the order we don't really care about the idx_to_order
+    print('Making dictionnaries')
+
     order_to_idx = {}
     idx_to_order = {}
     for (idx, oid) in enumerate(OrdersMerged.order_id.unique().tolist()):
@@ -29,6 +32,7 @@ def GettingCoocurenceMatrix(dirName: str = 'data'):
         prod_to_idx[prodid] = idx
         idx_to_prod[idx] = prodid
 
+    print('Maping dictionnaries')
     OrdersMerged['prod_idx'] = OrdersMerged['product_id'].map(prod_to_idx)
     OrdersMerged['ord_idx'] = OrdersMerged['order_id'].map(order_to_idx)
 
@@ -36,14 +40,13 @@ def GettingCoocurenceMatrix(dirName: str = 'data'):
     OccurRow = OrdersMerged['ord_idx'].to_list()
     OccurCol = OrdersMerged['prod_idx'].to_list()
 
+    print('Making Sparse Mat Order vs Product')
     SparseMat = sparse.csr_matrix((Occur, (OccurRow, OccurCol)),
                                   shape=(len(order_to_idx),
                                   len(idx_to_prod)))
     # Make Coocurence matrix
+    print('Making coocurences matrix')
     Cooc_Mat = SparseMat.T.dot(SparseMat)
     Cooc_Mat.setdiag(0)
 
-    print(Cooc_Mat[100, :].max())
-    print(Cooc_Mat[100, :].argmax())
-    print(idx_to_prod[100])
-    print(idx_to_prod[Cooc_Mat[100, :].argmax()])
+    return Cooc_Mat

@@ -1,11 +1,11 @@
 # 1) create a data folder
 # 2) batch download the data from kaggle there
 # 3) unzip them there
+import os
+import zipfile
 
 
 def DownloadData(dirName: str = 'data') -> None:
-
-    import os
 
     """Dowload the data from instacart on Kaggle
 
@@ -32,8 +32,6 @@ def DownloadData(dirName: str = 'data') -> None:
 
 def UnzipData(dirName: str = 'data') -> None:
 
-    import os
-    import zipfile
     fileName = f'{dirName}.zip'
     # first extraction
     with zipfile.ZipFile(f'{dirName}/{fileName}', 'r') as zip_ref:
